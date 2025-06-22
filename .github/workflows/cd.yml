@@ -1,0 +1,15 @@
+ on:
+   workflow_run:
+     workflows: ["CI Pipeline"]
+     types:
+       - completed
+
+ jobs:
+   deploy:
+     runs-on: ubuntu-latest
+     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+     steps:
+       - name: Deploy Container
+         run: |
+           docker build -t wafer-app .
+           docker run -d -p 8501:8501 wafer-app
